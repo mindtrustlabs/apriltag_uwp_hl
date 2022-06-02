@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(apriltags-umich LANGUAGES C CXX)
+project(apriltags LANGUAGES C CXX)
 
 include_directories(.)
 aux_source_directory(common COMMON_SRC)
@@ -7,7 +7,7 @@ set(APRILTAG_SRCS apriltag.c apriltag_pose.c apriltag_quad_thresh.c tagStandard4
 
 set(CMAKE_BUILD_TYPE Release)
 
-option (USE_APRIL_TAGS_PYTHON_WRAPPER "Build the python wrappers." YES)
+option (BUILD_APRIL_TAGS_PYTHON_WRAPPER "Build the python wrappers." YES)
 option (BUILD_APRIL_TAG_EXAMPLES "Build the example programs." YES)
 
 # Library
@@ -21,25 +21,25 @@ if (MSVC)
     #target_link_libraries(${PROJECT_NAME} ${PTHREAD_LIBRARIES} winmm)
 else()
     find_package(Threads REQUIRED)
-    target_link_libraries(${PROJECT_NAME} Threads::Threads m)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads m)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION 3 VERSION 3.1.0)
 
 #include(GNUInstallDirs)
-#target_include_directories(${PROJECT_NAME} PUBLIC
-#    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>"
-#    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/common>"
-#    "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>/apriltag")
+target_include_directories(${PROJECT_NAME} PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/common>"
+    "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>/apriltag")
 
-#set_target_properties(${PROJECT_NAME} PROPERTIES
-#    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_INSTALL_LIBDIR}
-#    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_LIBDIR}
-#)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_LIBDIR}
+)
 
 
 # install library
-install(TARGETS ${PROJECT_NAME} EXPORT apriltag-umich
+install(TARGETS ${PROJECT_NAME} EXPORT apriltagTargets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
@@ -52,10 +52,15 @@ foreach(HEADER ${HEADER_FILES})
 endforeach()
 
 # export library
-install(EXPORT apriltag-umich
-    DESTINATION share/apriltag-umich/cmake
-    FILE apriltag-umichConfig.cmake
+install(EXPORT apriltagTargets
+    FILE apriltagTargets.cmake
+    NAMESPACE apriltag::
+    DESTINATION share/apriltag/cmake
 )
+install(FILES CMake/apriltagConfig.cmake DESTINATION share/apriltag/cmake)
+export(TARGETS apriltags
+    NAMESPACE apriltag::
+    FILE apriltagTargets.cmake)
 
 #FILE(READ apriltag.pc.in PKGC)
 #STRING(REGEX REPLACE "^prefix=" "prefix=${CMAKE_INSTALL_PREFIX}" PKGC_CONF "${PKGC}" )
