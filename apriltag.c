@@ -990,8 +990,8 @@ int prefer_smaller(int pref, double q0, double q1)
 
 zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 {
-    tagdebug::Log("Hellow Red", Color::Red);
-    tagdebug::Log("apriltag.c:  Detect init <>!!<>");
+    //tagdebug::Log("Hellow Red", Color::Red);
+    printf("apriltag.c:  Detect init <>!!<>");
     if (zarray_size(td->tag_families) == 0) {
         zarray_t *s = zarray_create(sizeof(apriltag_detection_t*));
         printf("apriltag.c: No tag families enabled.");
