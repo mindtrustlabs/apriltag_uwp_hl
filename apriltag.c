@@ -89,6 +89,24 @@ struct graymodel
     double C[3];
 };
 
+
+// The callback signature (shared by Unity C#)`enter code here`
+using DebugLogCallback = void(const char*);
+
+// Storage for the pointer to the Unity C# callback
+static DebugLogCallback s_debugLogCallback = nullptr;
+
+// Register the callback (called from Unity C#)
+void RegisterDebugLog(DebugLogCallback callback)
+{
+    s_debugLogCallback = callback;
+}
+
+// Use from C++ to log the message to Unity C#
+void DebugLog(const char* message)
+{
+    s_debugLogCallback(message);
+}
 void graymodel_init(struct graymodel *gm)
 {
     memset(gm, 0, sizeof(struct graymodel));
@@ -991,7 +1009,8 @@ int prefer_smaller(int pref, double q0, double q1)
 zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 {
     //tagdebug::Log("Hellow Red", Color::Red);
-    printf("apriltag.c:  Detect init <>!!<>");
+    DebugLog("apriltag.c:  Detect init <>!!<> hellow");
+    printf("apriltag.c: print  Detect init <>!!<> hellow");
     if (zarray_size(td->tag_families) == 0) {
         zarray_t *s = zarray_create(sizeof(apriltag_detection_t*));
         printf("apriltag.c: No tag families enabled.");
