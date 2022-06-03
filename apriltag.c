@@ -90,8 +90,7 @@ struct graymodel
 };
 
 
-// The callback signature (shared by Unity C#)`enter code here`
-using DebugLogCallback = void(const char*);
+
 
 // Storage for the pointer to the Unity C# callback
 static DebugLogCallback s_debugLogCallback = nullptr;
