@@ -261,18 +261,6 @@ void apriltag_detector_destroy(apriltag_detector_t *td);
 // _detection_destroy and zarray_destroy yourself.
 zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig);
 
-//extern "C"
-//{
-//    //Create a callback delegate
-//    typedef void(*FuncCallBack)(const char* message, int size);
-//    static FuncCallBack callbackInstance = nullptr;
-//    DLLExport void RegisterDebugCallback(FuncCallBack cb);
-//}
-#define DllExport __declspec (dllexport)
-
-// The callback signature (shared by Unity C#)`enter code here`
-typedef void(*DebugLogCallback)();// const char* message, int size);
-DllExport void RegisterDebugLog(DebugLogCallback callback);
 
 // Call this method on each of the tags returned by apriltag_detector_detect
 void apriltag_detection_destroy(apriltag_detection_t *det);

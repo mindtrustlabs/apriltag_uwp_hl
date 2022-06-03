@@ -91,14 +91,25 @@ struct graymodel
 
 
 
+//extern "C"
+//{
+//    //Create a callback delegate
+//    typedef void(*FuncCallBack)(const char* message, int size);
+//    static FuncCallBack callbackInstance = nullptr;
+//    DLLExport void RegisterDebugCallback(FuncCallBack cb);
+//}
+#define DllExport __declspec (dllexport)
+
+// The callback signature (shared by Unity C#)`enter code here`
+typedef void(*DebugLogCallback)();// const char* message, int size);
 
 // Storage for the pointer to the Unity C# callback
 static DebugLogCallback s_debugLogCallback = NULL;
 
 // Register the callback (called from Unity C#)
-void RegisterDebugLog(DebugLogCallback callback)
+DllExport void RegisterDebugLog()//DebugLogCallback callback)
 {
-    s_debugLogCallback = callback;
+    //s_debugLogCallback = callback;
 }
 
 // Use from C++ to log the message to Unity C#
