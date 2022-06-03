@@ -90,12 +90,10 @@ struct graymodel
 };
 
 
-extern "C"
-{
-    // Storage for the pointer to the Unity C# callback
-    static DebugLogCallback s_debugLogCallback = NULL;
-}
 
+
+// Storage for the pointer to the Unity C# callback
+static DebugLogCallback s_debugLogCallback = NULL;
 
 // Register the callback (called from Unity C#)
 void RegisterDebugLog(DebugLogCallback callback)
