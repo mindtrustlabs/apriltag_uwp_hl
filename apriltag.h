@@ -262,7 +262,8 @@ void apriltag_detector_destroy(apriltag_detector_t *td);
 zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig);
 
 // The callback signature (shared by Unity C#)`enter code here`
-using DebugLogCallback = void(const char*);
+typedef void(*DebugLogCallback)(const char* message);
+//using DebugLogCallback = void(const char*);
 void RegisterDebugLog(DebugLogCallback callback);
 
 // Call this method on each of the tags returned by apriltag_detector_detect
