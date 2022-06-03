@@ -105,7 +105,7 @@ void RegisterDebugLog(DebugLogCallback callback)
 void DebugLog(const char* message)
 {
     if (s_debugLogCallback != NULL)
-        s_debugLogCallback(message, (int)strlen(message));
+        s_debugLogCallback();// message, (int)strlen(message));
 }
 
 void graymodel_init(struct graymodel *gm)
