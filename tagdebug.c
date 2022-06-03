@@ -1,4 +1,4 @@
-#include "DebugCPP.h"
+#include "tagdebug.h"
 
 #include<stdio.h>
 #include <string>
@@ -6,42 +6,42 @@
 #include <sstream>
 
 //-------------------------------------------------------------------
-void  Debug::Log(const char* message, Color color) {
+void  tagdebug::Log(const char* message, Color color) {
     if (callbackInstance != nullptr)
         callbackInstance(message, (int)color, (int)strlen(message));
 }
 
-void  Debug::Log(const std::string message, Color color) {
+void  tagdebug::Log(const std::string message, Color color) {
     const char* tmsg = message.c_str();
     if (callbackInstance != nullptr)
         callbackInstance(tmsg, (int)color, (int)strlen(tmsg));
 }
 
-void  Debug::Log(const int message, Color color) {
+void  tagdebug::Log(const int message, Color color) {
     std::stringstream ss;
     ss << message;
     send_log(ss, color);
 }
 
-void  Debug::Log(const char message, Color color) {
+void  tagdebug::Log(const char message, Color color) {
     std::stringstream ss;
     ss << message;
     send_log(ss, color);
 }
 
-void  Debug::Log(const float message, Color color) {
+void  tagdebug::Log(const float message, Color color) {
     std::stringstream ss;
     ss << message;
     send_log(ss, color);
 }
 
-void  Debug::Log(const double message, Color color) {
+void  tagdebug::Log(const double message, Color color) {
     std::stringstream ss;
     ss << message;
     send_log(ss, color);
 }
 
-void Debug::Log(const bool message, Color color) {
+void tagdebug::Log(const bool message, Color color) {
     std::stringstream ss;
     if (message)
         ss << "true";
@@ -51,7 +51,7 @@ void Debug::Log(const bool message, Color color) {
     send_log(ss, color);
 }
 
-void Debug::send_log(const std::stringstream& ss, const Color& color) {
+void tagdebug::send_log(const std::stringstream& ss, const Color& color) {
     const std::string tmp = ss.str();
     const char* tmsg = tmp.c_str();
     if (callbackInstance != nullptr)

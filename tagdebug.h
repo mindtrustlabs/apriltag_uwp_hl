@@ -17,7 +17,7 @@ extern "C"
 //Color Enum
 enum class Color { Red, Green, Blue, Black, White, Yellow, Orange };
 
-class  Debug
+class  tagdebug
 {
 public:
     static void Log(const char* message, Color color = Color::Black);
