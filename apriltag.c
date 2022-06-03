@@ -104,8 +104,10 @@ void RegisterDebugLog(DebugLogCallback callback)
 // Use from C++ to log the message to Unity C#
 void DebugLog(const char* message)
 {
-    s_debugLogCallback(message);
+    if (s_debugLogCallback != NULL)
+        s_debugLogCallback(message, (int)strlen(message));
 }
+
 void graymodel_init(struct graymodel *gm)
 {
     memset(gm, 0, sizeof(struct graymodel));
