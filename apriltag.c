@@ -1021,18 +1021,19 @@ int prefer_smaller(int pref, double q0, double q1)
 zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 {
     //tagdebug::Log("Hellow Red", Color::Red);
-    DebugLog("apriltag.c:  Detect init <>!!<> hellow");
-    printf("apriltag.c: print  Detect init <>!!<> hellow");
+    DebugLog(" [mg] Detect Init "); 
     if (zarray_size(td->tag_families) == 0) {
         zarray_t *s = zarray_create(sizeof(apriltag_detection_t*));
-        printf("apriltag.c: No tag families enabled.");
+        DebugLog("apriltag.c: No tag families enabled.");
         return s;
     }
 
+    DebugLog(" [mg] passed tags. About to get threads "); 
     if (td->wp == NULL || td->nthreads != workerpool_get_nthreads(td->wp)) {
         workerpool_destroy(td->wp);
         td->wp = workerpool_create(td->nthreads);
     }
+    DebugLog(" [mg] clearing time "); 
 
     timeprofile_clear(td->tp);
     timeprofile_stamp(td->tp, "init");
@@ -1046,6 +1047,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 
         timeprofile_stamp(td->tp, "decimate");
     }
+    DebugLog(" [mg] quad sigma "); 
 
     if (td->quad_sigma != 0) {
         // compute a reasonable kernel width by figuring that the
@@ -1092,11 +1094,13 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         }
     }
 
+    DebugLog(" [mg] blur ");
     timeprofile_stamp(td->tp, "blur/sharp");
 
     if (td->debug)
         image_u8_write_pnm(quad_im, "debug_preprocess.pnm");
 
+    DebugLog(" [mg] quad ");
     zarray_t *quads = apriltag_quad_thresh(td, quad_im);
 
     // adjust centers of pixels so that they correspond to the
@@ -1118,11 +1122,15 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         }
     }
 
+    DebugLog(" [mg] quad not orig ");
     if (quad_im != im_orig)
         image_u8_destroy(quad_im);
 
+    DebugLog(" [mg] detection count");
     zarray_t *detections = zarray_create(sizeof(apriltag_detection_t*));
+    DebugLog(" [mg] detection count:: "+sizeof(apriltag_detection_t*));
 
+    DebugLog(" [mg] using quads "+ quads);
     td->nquads = zarray_size(quads);
 
     timeprofile_stamp(td->tp, "quads");
@@ -1151,6 +1159,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         image_u8_destroy(im_quads);
     }
 
+    DebugLog(" [mg] step 2");
     ////////////////////////////////////////////////////////////////
     // Step 2. Decode tags from each quad.
     if (1) {
@@ -1210,6 +1219,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         image_u8_destroy(im_quads);
     }
 
+    DebugLog(" [mg] refinement 3");
     timeprofile_stamp(td->tp, "decode+refinement");
 
     ////////////////////////////////////////////////////////////////
@@ -1255,7 +1265,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
                     if (pref == 0) {
                         // at this point, we should only be undecided if the tag detections
                         // are *exactly* the same. How would that happen?
-                        printf("uh oh, no preference for overlappingdetection\n");
+                        DebugLog("uh oh, no preference for overlappingdetection\n");
                     }
 
                     if (pref < 0) {
@@ -1285,6 +1295,8 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 
     timeprofile_stamp(td->tp, "reconcile");
 
+
+    DebugLog(" [mg] debug");
     ////////////////////////////////////////////////////////////////
     // Produce final debug output
     if (td->debug) {
@@ -1424,7 +1436,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 
     zarray_sort(detections, detection_compare_function);
     timeprofile_stamp(td->tp, "cleanup");
-
+    
     return detections;
 }
 
