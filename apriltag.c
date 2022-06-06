@@ -101,22 +101,22 @@ struct graymodel
 #define DllExport __declspec (dllexport)
 
 // The callback signature (shared by Unity C#)`enter code here`
-typedef void(*DebugLogCallback)();// const char* message, int size);
+typedef void(*DebugLogCallback)(const char* message, int size);
 
 // Storage for the pointer to the Unity C# callback
 static DebugLogCallback s_debugLogCallback = NULL;
 
 // Register the callback (called from Unity C#)
-DllExport void RegisterDebugLog()//DebugLogCallback callback)
+DllExport void RegisterDebugLog(DebugLogCallback callback)
 {
-    //s_debugLogCallback = callback;
+    s_debugLogCallback = callback;
 }
 
 // Use from C++ to log the message to Unity C#
 void DebugLog(const char* message)
 {
     if (s_debugLogCallback != NULL)
-        s_debugLogCallback();// message, (int)strlen(message));
+        s_debugLogCallback(message, (int)strlen(message));
 }
 
 void graymodel_init(struct graymodel *gm)
