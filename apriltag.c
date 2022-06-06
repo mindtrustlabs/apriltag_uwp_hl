@@ -1130,7 +1130,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
     zarray_t *detections = zarray_create(sizeof(apriltag_detection_t*));
     DebugLog(" [mg] detection count:: "+sizeof(apriltag_detection_t*));
 
-    DebugLog(" [mg] using quads "+ quads);
+    DebugLog(" [mg] using quads "+ zarray_size(quads));
     td->nquads = zarray_size(quads);
 
     timeprofile_stamp(td->tp, "quads");
