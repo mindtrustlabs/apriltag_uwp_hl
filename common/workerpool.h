@@ -28,7 +28,6 @@ either expressed or implied, of the Regents of The University of Michigan.
 #pragma once
 
 #include "zarray.h"
-#include "apriltag.h"
 
 typedef struct workerpool workerpool_t;
 
@@ -41,7 +40,6 @@ void workerpool_add_task(workerpool_t *wp, void (*f)(void *p), void *p);
 
 // runs all added tasks, waits for them to complete.
 void workerpool_run(workerpool_t *wp);
-//, void (*f)(const char*));
 
 // same as workerpool_run, except always single threaded. (mostly for debugging).
 void workerpool_run_single(workerpool_t *wp);
