@@ -1174,7 +1174,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
             ntasks++;
         }
 
-        workerpool_run(td->wp, s_debugLogCallback);
+        workerpool_run(td->wp, DebugLog);
 
         free(tasks);
 

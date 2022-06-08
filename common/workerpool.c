@@ -181,7 +181,7 @@ void workerpool_run_single(workerpool_t *wp)
 
 
 // runs all added tasks, waits for them to complete.
-void workerpool_run(workerpool_t* wp, void (*f)(const char*, int))
+void workerpool_run(workerpool_t* wp, void (*f)(const char*))
 {
     if (wp->nthreads > 1) {
         wp->end_count = 0;
