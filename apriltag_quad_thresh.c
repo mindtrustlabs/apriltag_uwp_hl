@@ -1468,7 +1468,7 @@ unionfind_t* connected_components(apriltag_detector_t *td, image_u8_t* threshim,
             ntasks++;
         }
 
-        workerpool_run(td->wp);
+        workerpool_run(td->wp, 0);
 
         // XXX stitch together the different chunks.
         for (int i = 1; i < ntasks; i++) {
@@ -1692,7 +1692,7 @@ zarray_t* gradient_clusters(apriltag_detector_t *td, image_u8_t* threshim, int w
         ntasks++;
     }
 
-    workerpool_run(td->wp);
+    workerpool_run(td->wp, 0);
 
     zarray_t** clusters_list = malloc(sizeof(zarray_t *)*ntasks);
     for (int i = 0; i < ntasks; i++) {
@@ -1770,7 +1770,7 @@ zarray_t* fit_quads(apriltag_detector_t *td, int w, int h, zarray_t* clusters, i
         ntasks++;
     }
 
-    workerpool_run(td->wp);
+    workerpool_run(td->wp, 0);
 
     free(tasks);
 
