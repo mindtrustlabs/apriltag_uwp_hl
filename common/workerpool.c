@@ -180,27 +180,27 @@ void workerpool_run_single(workerpool_t *wp)
 }
 
 // Storage for the pointer to the Unity C# callback
-static WPDebugLogCallback s_debugLogCallback = NULL;
+static WPDebugLogCallback wp_debugLogCallback = NULL;
 
-void DebugLog(const char* message)
+void DebugLogX(const char* message)
 {
-    if (s_debugLogCallback != NULL)
-        s_debugLogCallback(message, (int)strlen(message));
+    if (wp_debugLogCallback != NULL)
+        wp_debugLogCallback(message, (int)strlen(message));
 }
 
 // runs all added tasks, waits for them to complete.
 void workerpool_run(workerpool_t* wp, WPDebugLogCallback logger)
 {
-    s_debugLogCallback = logger;
+    wp_debugLogCallback = logger;
     if (wp->nthreads > 1) {
         wp->end_count = 0;
-        DebugLog("Multi thread");
+        DebugLogX("Multi thread");
         pthread_mutex_lock(&wp->mutex);
         pthread_cond_broadcast(&wp->startcond);
 
         while (wp->end_count < wp->nthreads) {
 
-            DebugLog("Thread Completed");
+            DebugLogX("Thread Completed");
 //            printf("caught %d\n", wp->end_count);
             pthread_cond_wait(&wp->endcond, &wp->mutex);
         }
@@ -212,11 +212,11 @@ void workerpool_run(workerpool_t* wp, WPDebugLogCallback logger)
         zarray_clear(wp->tasks);
 
     } else {
-        DebugLog("Single thread");
+        DebugLogX("Single thread");
         workerpool_run_single(wp);
     }
     
-            DebugLog("Thread Completed");
+    DebugLogX("Thread Completed");
 }
 
 int workerpool_get_nprocs()
