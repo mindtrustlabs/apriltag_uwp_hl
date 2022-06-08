@@ -1122,6 +1122,8 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         image_u8_destroy(quad_im);
 
     zarray_t *detections = zarray_create(sizeof(apriltag_detection_t*));
+
+    //DebugLog(" [mg] using quads "+ zarray_size(quads));
     td->nquads = zarray_size(quads);
 
     timeprofile_stamp(td->tp, "quads");
@@ -1174,7 +1176,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
             ntasks++;
         }
 
-        workerpool_run(td->wp, DebugLog);
+        workerpool_run(td->wp);
 
         free(tasks);
 
