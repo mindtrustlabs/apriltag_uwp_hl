@@ -43,7 +43,7 @@ void workerpool_add_task(workerpool_t *wp, void (*f)(void *p), void *p);
 // The callback signature (shared by Unity C#)`enter code here`
 typedef void(*WPDebugLogCallback)(const char* message, int size);
 // runs all added tasks, waits for them to complete.
-void workerpool_run(workerpool_t *wp, WPDebugLogCallback logger)
+void workerpool_run(workerpool_t* wp, WPDebugLogCallback logger);
 
 // same as workerpool_run, except always single threaded. (mostly for debugging).
 void workerpool_run_single(workerpool_t *wp);
