@@ -180,7 +180,7 @@ void workerpool_run_single(workerpool_t *wp)
 }
 
 // Storage for the pointer to the Unity C# callback
-static DebugLogCallback s_debugLogCallback = NULL;
+static WPDebugLogCallback s_debugLogCallback = NULL;
 
 void DebugLog(const char* message)
 {
@@ -189,7 +189,7 @@ void DebugLog(const char* message)
 }
 
 // runs all added tasks, waits for them to complete.
-void workerpool_run(workerpool_t *wp, DebugCallbackLog logger)
+void workerpool_run(workerpool_t *wp, WPDebugLogCallback logger)
 {
     s_debugLogCallback = logger;
     if (wp->nthreads > 1) {
