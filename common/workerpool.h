@@ -39,8 +39,6 @@ void workerpool_destroy(workerpool_t *wp);
 
 void workerpool_add_task(workerpool_t *wp, void (*f)(void *p), void *p);
 
-
-typedef void(*WPDebugLogCallback)(const char* message, int size);
 // runs all added tasks, waits for them to complete.
 void workerpool_run(workerpool_t* wp);//, void (*f)(const char*));
 
