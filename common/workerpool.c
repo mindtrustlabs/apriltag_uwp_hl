@@ -192,11 +192,6 @@ void DebugLog(const char* message)
 void workerpool_run(workerpool_t* wp, WPDebugLogCallback logger)
 {
     s_debugLogCallback = logger;
-    workerpool_run(wp);
-}
-
-void workerpool_run(workerpool_t* wp)
-{
     if (wp->nthreads > 1) {
         wp->end_count = 0;
         DebugLog("Multi thread");
@@ -220,8 +215,8 @@ void workerpool_run(workerpool_t* wp)
         DebugLog("Single thread");
         workerpool_run_single(wp);
     }
-
-    DebugLog("Worker Completed");
+    
+            DebugLog("Thread Completed");
 }
 
 int workerpool_get_nprocs()

@@ -101,6 +101,9 @@ struct graymodel
 #define DllExport __declspec (dllexport)
 
 
+// The callback signature (shared by Unity C#)`enter code here`
+typedef void(*DebugLogCallback)(const char* message, int size);
+
 // Storage for the pointer to the Unity C# callback
 static DebugLogCallback s_debugLogCallback = NULL;
 
