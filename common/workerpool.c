@@ -179,9 +179,9 @@ void workerpool_run_single(workerpool_t *wp)
     zarray_clear(wp->tasks);
 }
 
-
+//, void (*f)(const char*))
 // runs all added tasks, waits for them to complete.
-void workerpool_run(workerpool_t* wp)//, void (*f)(const char*))
+void workerpool_run(workerpool_t* wp)
 {
     if (wp->nthreads > 1) {
         wp->end_count = 0;
