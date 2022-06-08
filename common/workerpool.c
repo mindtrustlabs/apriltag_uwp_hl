@@ -189,9 +189,14 @@ void DebugLog(const char* message)
 }
 
 // runs all added tasks, waits for them to complete.
-void workerpool_run(workerpool_t *wp, WPDebugLogCallback logger)
+void workerpool_run(workerpool_t* wp, WPDebugLogCallback logger)
 {
     s_debugLogCallback = logger;
+    workerpool_run(wp);
+}
+
+void workerpool_run(workerpool_t* wp)
+{
     if (wp->nthreads > 1) {
         wp->end_count = 0;
         DebugLog("Multi thread");
@@ -215,6 +220,8 @@ void workerpool_run(workerpool_t *wp, WPDebugLogCallback logger)
         DebugLog("Single thread");
         workerpool_run_single(wp);
     }
+
+    DebugLog("Worker Completed");
 }
 
 int workerpool_get_nprocs()
