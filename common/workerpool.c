@@ -27,11 +27,9 @@ either expressed or implied, of the Regents of The University of Michigan.
 
 #define __USE_GNU
 #include "common/pthreads_cross.h"
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -39,9 +37,6 @@ either expressed or implied, of the Regents of The University of Michigan.
 #endif
 
 #include "workerpool.h"
-#include "timeprofile.h"
-#include "math_util.h"
-#include "string_util.h"
 
 struct workerpool {
     int nthreads;
@@ -118,8 +113,9 @@ workerpool_t *workerpool_create(int nthreads)
         for (int i = 0; i < nthreads; i++) {
             int res = pthread_create(&wp->threads[i], NULL, worker_thread, wp);
             if (res != 0) {
-                perror("pthread_create");
-                exit(-1);
+                //debug_print("Insufficient system resources to create workerpool threads\n");
+                // errno already set to EAGAIN by pthread_create() failure
+                return NULL;
             }
         }
     }
@@ -179,19 +175,16 @@ void workerpool_run_single(workerpool_t *wp)
     zarray_clear(wp->tasks);
 }
 
-//, void (*f)(const char*))
 // runs all added tasks, waits for them to complete.
 void workerpool_run(workerpool_t *wp)
 {
     if (wp->nthreads > 1) {
         wp->end_count = 0;
-        //if((*f)!=0)(*f)("Multi thread");
+
         pthread_mutex_lock(&wp->mutex);
         pthread_cond_broadcast(&wp->startcond);
 
         while (wp->end_count < wp->nthreads) {
-
-            //(*f)("Thread Completed");
 //            printf("caught %d\n", wp->end_count);
             pthread_cond_wait(&wp->endcond, &wp->mutex);
         }
@@ -203,11 +196,8 @@ void workerpool_run(workerpool_t *wp)
         zarray_clear(wp->tasks);
 
     } else {
-        //if ((*f) != 0)(*f)("Single thread");
         workerpool_run_single(wp);
     }
-    
-    //if ((*f) != 0)(*f)("Thread Completed");
 }
 
 int workerpool_get_nprocs()
