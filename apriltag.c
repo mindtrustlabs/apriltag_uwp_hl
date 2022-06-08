@@ -100,8 +100,6 @@ struct graymodel
 //}
 #define DllExport __declspec (dllexport)
 
-// The callback signature (shared by Unity C#)`enter code here`
-typedef void(*DebugLogCallback)(const char* message, int size);
 
 // Storage for the pointer to the Unity C# callback
 static DebugLogCallback s_debugLogCallback = NULL;
@@ -1028,12 +1026,10 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         return s;
     }
 
-    DebugLog(" [mg] passed tags. About to get threads "); 
     if (td->wp == NULL || td->nthreads != workerpool_get_nthreads(td->wp)) {
         workerpool_destroy(td->wp);
         td->wp = workerpool_create(td->nthreads);
     }
-    DebugLog(" [mg] clearing time "); 
 
     timeprofile_clear(td->tp);
     timeprofile_stamp(td->tp, "init");
@@ -1047,7 +1043,6 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 
         timeprofile_stamp(td->tp, "decimate");
     }
-    DebugLog(" [mg] quad sigma "); 
 
     if (td->quad_sigma != 0) {
         // compute a reasonable kernel width by figuring that the
@@ -1094,13 +1089,11 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         }
     }
 
-    DebugLog(" [mg] blur ");
     timeprofile_stamp(td->tp, "blur/sharp");
 
     if (td->debug)
         image_u8_write_pnm(quad_im, "debug_preprocess.pnm");
 
-    DebugLog(" [mg] quad ");
     zarray_t *quads = apriltag_quad_thresh(td, quad_im);
 
     // adjust centers of pixels so that they correspond to the
@@ -1122,15 +1115,10 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         }
     }
 
-    DebugLog(" [mg] quad not orig ");
     if (quad_im != im_orig)
         image_u8_destroy(quad_im);
 
-    DebugLog(" [mg] detection count");
     zarray_t *detections = zarray_create(sizeof(apriltag_detection_t*));
-    DebugLog(" [mg] detection count:: "+sizeof(apriltag_detection_t*));
-
-    DebugLog(" [mg] using quads "+ zarray_size(quads));
     td->nquads = zarray_size(quads);
 
     timeprofile_stamp(td->tp, "quads");
@@ -1159,7 +1147,6 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         image_u8_destroy(im_quads);
     }
 
-    DebugLog(" [mg] step 2");
     ////////////////////////////////////////////////////////////////
     // Step 2. Decode tags from each quad.
     if (1) {
@@ -1184,7 +1171,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
             ntasks++;
         }
 
-        workerpool_run(td->wp);
+        workerpool_run(td->wp, s_debugLogCallback);
 
         free(tasks);
 
@@ -1219,7 +1206,6 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         image_u8_destroy(im_quads);
     }
 
-    DebugLog(" [mg] refinement 3");
     timeprofile_stamp(td->tp, "decode+refinement");
 
     ////////////////////////////////////////////////////////////////
@@ -1296,7 +1282,6 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
     timeprofile_stamp(td->tp, "reconcile");
 
 
-    DebugLog(" [mg] debug");
     ////////////////////////////////////////////////////////////////
     // Produce final debug output
     if (td->debug) {

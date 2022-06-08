@@ -120,6 +120,9 @@ struct apriltag_quad_thresh_params
     int deglitch;
 };
 
+// The callback signature (shared by Unity C#)`enter code here`
+typedef void(*DebugLogCallback)(const char* message, int size);
+
 // Represents a detector object. Upon creating a detector, all fields
 // are set to reasonable values, but can be overridden by accessing
 // these fields.
