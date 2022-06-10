@@ -914,7 +914,7 @@ static void quad_decode_task(void *_u)
     struct quad_decode_task *task = (struct quad_decode_task*) _u;
     apriltag_detector_t *td = task->td;
     image_u8_t *im = task->im;
-
+    int count = 0;
     for (int quadidx = task->i0; quadidx < task->i1; quadidx++) {
         struct quad *quad_original;
         zarray_get_volatile(task->quads, quadidx, &quad_original);
@@ -993,13 +993,25 @@ static void quad_decode_task(void *_u)
                 else {
                     DebugLog("Adding NON null det to zarray");
                 }
+                count++;
                 pthread_mutex_lock(&td->mutex);
                 zarray_add(task->detections, &det);
                 pthread_mutex_unlock(&td->mutex);
             }
+            else {
+                DebugLog("Adding nothing to the z array");
+            }
 
             quad_destroy(quad);
         }
+    }
+    if (count == 0)
+    {
+        DebugLog("Zero items added to array");
+    }
+    else {
+
+        DebugLog("At leaset one items added to array");
     }
 }
 
