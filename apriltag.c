@@ -415,6 +415,7 @@ apriltag_detector_t *apriltag_detector_create()
 
 void apriltag_detector_destroy(apriltag_detector_t *td)
 {
+    DebugLog("Free detector");
     timeprofile_destroy(td->tp);
     workerpool_destroy(td->wp);
 
@@ -985,7 +986,13 @@ static void quad_decode_task(void *_u)
                     det->p[i][0] = p[0];
                     det->p[i][1] = p[1];
                 }
-
+                if (det == NULL)
+                {
+                    DebugLog("Adding null det to zarray");
+                }
+                else {
+                    DebugLog("Adding NON null det to zarray");
+                }
                 pthread_mutex_lock(&td->mutex);
                 zarray_add(task->detections, &det);
                 pthread_mutex_unlock(&td->mutex);
@@ -1001,6 +1008,7 @@ void apriltag_detection_destroy(apriltag_detection_t *det)
     if (det == NULL)
         return;
 
+    DebugLog("Destroy Tag");
     matd_destroy(det->H);
     free(det);
 }
@@ -1221,7 +1229,7 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         zarray_t *poly1 = g2d_polygon_create_zeros(4);
 
         for (int i0 = 0; i0 < zarray_size(detections); i0++) {
-
+            DebugLog("Detection Iteration");
             apriltag_detection_t *det0;
             zarray_get(detections, i0, &det0);
 
@@ -1261,12 +1269,14 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 
                     if (pref < 0) {
                         // keep det0, destroy det1
+                        DebugLog("Destroy 1");
                         apriltag_detection_destroy(det1);
                         zarray_remove_index(detections, i1, 1);
                         i1--; // retry the same index
                         goto retry1;
                     } else {
                         // keep det1, destroy det0
+                        DebugLog("Destroy 0");
                         apriltag_detection_destroy(det0);
                         zarray_remove_index(detections, i0, 1);
                         i0--; // retry the same index.
