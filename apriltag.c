@@ -914,7 +914,6 @@ static void quad_decode_task(void *_u)
     struct quad_decode_task *task = (struct quad_decode_task*) _u;
     apriltag_detector_t *td = task->td;
     image_u8_t *im = task->im;
-    int count = 0;
     for (int quadidx = task->i0; quadidx < task->i1; quadidx++) {
         struct quad *quad_original;
         zarray_get_volatile(task->quads, quadidx, &quad_original);
@@ -986,32 +985,19 @@ static void quad_decode_task(void *_u)
                     det->p[i][0] = p[0];
                     det->p[i][1] = p[1];
                 }
-                if (det == NULL)
-                {
-                    DebugLog("Adding null det to zarray");
-                }
-                else {
-                    DebugLog("Adding NON null det to zarray");
-                }
-                count++;
+                
+                DebugLog("Adding det to zarray");
+
                 pthread_mutex_lock(&td->mutex);
                 zarray_add(task->detections, &det);
                 pthread_mutex_unlock(&td->mutex);
+            
+   
             }
-            else {
-                DebugLog("Adding nothing to the z array");
-            }
+ 
 
             quad_destroy(quad);
         }
-    }
-    if (count == 0)
-    {
-        DebugLog("Zero items added to array");
-    }
-    else {
-
-        DebugLog("At leaset one items added to array");
     }
 }
 
@@ -1020,7 +1006,7 @@ void apriltag_detection_destroy(apriltag_detection_t *det)
     if (det == NULL)
         return;
 
-    DebugLog("Destroy Tag");
+    DebugLog(">>> Destroy Tag");
     matd_destroy(det->H);
     free(det);
 }
@@ -1463,6 +1449,7 @@ void apriltag_detections_destroy(zarray_t *detections)
         apriltag_detection_destroy(det);
     }
 
+    DebugLog(">>> Destroy Tagsss");
     zarray_destroy(detections);
 }
 
