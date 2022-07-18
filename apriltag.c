@@ -415,7 +415,6 @@ apriltag_detector_t *apriltag_detector_create()
 
 void apriltag_detector_destroy(apriltag_detector_t *td)
 {
-    DebugLog("Free detector");
     timeprofile_destroy(td->tp);
     workerpool_destroy(td->wp);
 
@@ -1006,7 +1005,6 @@ void apriltag_detection_destroy(apriltag_detection_t *det)
     if (det == NULL)
         return;
 
-    DebugLog(">>> Destroy Tag");
     matd_destroy(det->H);
     free(det);
 }
@@ -1028,7 +1026,6 @@ int prefer_smaller(int pref, double q0, double q1)
 zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 {
     //tagdebug::Log("Hellow Red", Color::Red);
-    DebugLog(" [mg] Detect Init "); 
     if (zarray_size(td->tag_families) == 0) {
         zarray_t *s = zarray_create(sizeof(apriltag_detection_t*));
         DebugLog("apriltag.c: No tag families enabled.");
@@ -1129,7 +1126,6 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 
     zarray_t *detections = zarray_create(sizeof(apriltag_detection_t*));
 
-    //DebugLog(" [mg] using quads "+ zarray_size(quads));
     td->nquads = zarray_size(quads);
 
     timeprofile_stamp(td->tp, "quads");
@@ -1449,7 +1445,6 @@ void apriltag_detections_destroy(zarray_t *detections)
         apriltag_detection_destroy(det);
     }
 
-    DebugLog(">>> Destroy Tagsss");
     zarray_destroy(detections);
 }
 

@@ -180,13 +180,13 @@ void workerpool_run(workerpool_t *wp, void (*f)(const char*))
 {
     if (wp->nthreads > 1) {
         wp->end_count = 0;
-        if ((*f) != 0)(*f)("Multi thread");
+        //if ((*f) != 0)(*f)("Multi thread");
         pthread_mutex_lock(&wp->mutex);
         pthread_cond_broadcast(&wp->startcond);
 
         while (wp->end_count < wp->nthreads) {
 //            printf("caught %d\n", wp->end_count);
-            if ((*f) != 0)(*f)("Thread Complete");
+            //if ((*f) != 0)(*f)("Thread Complete");
             pthread_cond_wait(&wp->endcond, &wp->mutex);
         }
 
@@ -197,10 +197,10 @@ void workerpool_run(workerpool_t *wp, void (*f)(const char*))
         zarray_clear(wp->tasks);
 
     } else {
-        if ((*f) != 0)(*f)("Single thread");
+        //if ((*f) != 0)(*f)("Single thread");
         workerpool_run_single(wp);
     }
-    if ((*f) != 0)(*f)("Worker Done");
+    //if ((*f) != 0)(*f)("Worker Done");
 }
 
 int workerpool_get_nprocs()
